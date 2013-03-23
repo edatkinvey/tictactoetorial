@@ -1,6 +1,8 @@
 package com.kinvey.sample.tictac.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -42,10 +44,7 @@ public class LoginFragment extends SherlockFragment implements OnClickListener {
 		login = (Button) v.findViewById(R.id.login_button);
 		login.setOnClickListener(this);
 
-		if (TicTac.getClient(getSherlockActivity()).user().getUsername() != null) {
-			username.setText(TicTac.getClient(getSherlockActivity()).user()
-					.getUsername());
-		}
+	
 
 	}
 
@@ -78,13 +77,14 @@ public class LoginFragment extends SherlockFragment implements OnClickListener {
 
 					@Override
 					public void onSuccess(User arg0) {
-						Toast.makeText(
-								getSherlockActivity(),
-								"Logged in as: "
-										+ TicTac.getClient(
-												getSherlockActivity()).user()
-												.getUsername(),
-								Toast.LENGTH_SHORT).show();
+						Log.i(TicTac.TAG, "Logged in as: " + TicTac.getClient(getSherlockActivity()).user().getUsername());
+						Log.i(TicTac.TAG, "Logged in as: " +arg0.getUsername());
+
+						Intent extras = new Intent();
+						extras.putExtra("username", arg0.getUsername());
+						
+						LoginFragment.this.getSherlockActivity().setResult(2, extras);
+						LoginFragment.this.getSherlockActivity().finish();
 
 					}
 

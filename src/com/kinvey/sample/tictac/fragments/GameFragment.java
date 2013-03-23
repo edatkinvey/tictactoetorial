@@ -45,6 +45,7 @@ public class GameFragment extends SherlockFragment implements OnTouchListener {
 	}
 
 	private CellView[][] gameState;
+	
 
 	private static final int n = 3;
 
@@ -172,8 +173,9 @@ public class GameFragment extends SherlockFragment implements OnTouchListener {
 
 			@Override
 			public void onNew() {
-				endGameFragment.dismiss();
 				newGame();
+
+				endGameFragment.dismiss();
 			}
 		});
 		endGameFragment.show(fm, "fragment_edit_name");

@@ -37,7 +37,7 @@ public class TicTacApplication extends Application {
 				@Override
 				public void onSuccess(GameEntity arg0) {
 					Log.i(TicTac.TAG, "successfully persisted!");
-					
+					TicTacApplication.this.myEntity = arg0;
 				}
 				
 				@Override

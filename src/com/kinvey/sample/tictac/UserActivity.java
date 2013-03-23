@@ -73,6 +73,7 @@ public class UserActivity extends SherlockFragmentActivity implements ActionBar.
     
     private void logout(){
     	TicTac.getClient(this).user().logout();
+    	this.finish();
     }
 
 	// -------------Actionbar.TabListener methods

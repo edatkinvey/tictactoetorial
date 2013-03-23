@@ -1,19 +1,20 @@
 package com.kinvey.sample.tictac.fragments;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import android.graphics.Typeface;
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TableLayout;
-import android.widget.TableRow;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragment;
@@ -21,15 +22,18 @@ import com.kinvey.android.callback.KinveyListCallback;
 import com.kinvey.java.Query;
 import com.kinvey.java.query.AbstractQuery.SortOrder;
 import com.kinvey.sample.tictac.GameEntity;
+import com.kinvey.sample.tictac.GameEntity.GravatarCallback;
 import com.kinvey.sample.tictac.R;
 import com.kinvey.sample.tictac.TicTac;
+import com.kinvey.sample.tictac.component.LeaderAdapter;
 
-public class MenuFragment extends SherlockFragment implements OnClickListener {
+public class MenuFragment extends SherlockFragment implements OnClickListener,
+		GravatarCallback {
 
 	private TableLayout leaderBoard;
+
+	private ListView leaderList;
 	private Button newGame;
-
-
 
 	private List<GameEntity> leaders;
 
@@ -42,10 +46,12 @@ public class MenuFragment extends SherlockFragment implements OnClickListener {
 	@Override
 	public void onResume() {
 		super.onResume();
-		populateViews();
-		if (leaders != null && leaders.size() > 0) {
-			updateBoard();
+		if (leaders == null || leaders.size() == 0) {
+			leaders = new ArrayList<GameEntity>();
 		}
+		populateViews();
+
+
 	}
 
 	private void populateViews() {
@@ -53,6 +59,8 @@ public class MenuFragment extends SherlockFragment implements OnClickListener {
 		Query top = new Query();
 		top.addSort("totalWins", SortOrder.DESC);
 		top.setLimit(5);
+		leaders.clear();
+
 
 		TicTac.getClient(getSherlockActivity())
 				.appData(TicTac.Collection, GameEntity.class)
@@ -60,7 +68,14 @@ public class MenuFragment extends SherlockFragment implements OnClickListener {
 
 					@Override
 					public void onSuccess(GameEntity[] arg0) {
-						leaders = Arrays.asList(arg0);
+						for (int i = 0; i < arg0.length; i++) {
+
+							arg0[i].setPlayerName(arg0[i].getPlayerName());
+							arg0[i].setCallback(MenuFragment.this);
+							leaders.add(arg0[i]);
+
+						}
+						Log.i(TicTac.TAG, "leaderboard has: " + leaders.size());
 						updateBoard();
 
 					}
@@ -78,46 +93,13 @@ public class MenuFragment extends SherlockFragment implements OnClickListener {
 
 	private void updateBoard() {
 
-		leaderBoard.removeAllViews();
-		TableRow titleRow = new TableRow(getSherlockActivity());
-		titleRow.setLayoutParams(new TableRow.LayoutParams(
-				TableRow.LayoutParams.MATCH_PARENT,
-				TableRow.LayoutParams.WRAP_CONTENT));
-
-		TextView nameTitle = new TextView(getSherlockActivity());
-		nameTitle.setText("Name");
-		nameTitle.setTypeface(null, Typeface.BOLD);
-		TextView winsTitle = new TextView(getSherlockActivity());
-		winsTitle.setText("Wins");
-		winsTitle.setTypeface(null, Typeface.BOLD);
-		TextView loseTitle = new TextView(getSherlockActivity());
-		loseTitle.setText("Loses");
-		loseTitle.setTypeface(null, Typeface.BOLD);
-
-		titleRow.addView(nameTitle);
-		titleRow.addView(winsTitle);
-		titleRow.addView(loseTitle);
-		leaderBoard.addView(titleRow);
-
-		for (int i = 0; i < leaders.size(); i++) {
-			TableRow row = new TableRow(getSherlockActivity());
-			row.setLayoutParams(new TableRow.LayoutParams(
-					TableRow.LayoutParams.MATCH_PARENT,
-					TableRow.LayoutParams.WRAP_CONTENT));
-
-			TextView name = new TextView(getSherlockActivity());
-			name.setText(leaders.get(i).getAcl().getCreator());
-			TextView wins = new TextView(getSherlockActivity());
-			wins.setText(String.valueOf(leaders.get(i).getTotalWins()));
-			TextView loses = new TextView(getSherlockActivity());
-			loses.setText(String.valueOf(leaders.get(i).getTotalLoses()));
-
-			row.addView(name);
-			row.addView(wins);
-			row.addView(loses);
-			leaderBoard.addView(row);
+		if (getSherlockActivity() == null) {
+			return;
 		}
 
+		leaderList.setAdapter(new LeaderAdapter(getSherlockActivity(), leaders,
+				(LayoutInflater) getSherlockActivity().getSystemService(
+						Activity.LAYOUT_INFLATER_SERVICE)));
 
 	}
 
@@ -130,7 +112,8 @@ public class MenuFragment extends SherlockFragment implements OnClickListener {
 	}
 
 	private void bindViews(View v) {
-		leaderBoard = (TableLayout) v.findViewById(R.id.menu_leaderboard);
+		// leaderBoard = (TableLayout) v.findViewById(R.id.menu_leaderboard);
+		leaderList = (ListView) v.findViewById(R.id.menu_list);
 		newGame = (Button) v.findViewById(R.id.menu_newgame);
 		newGame.setOnClickListener(this);
 	}
@@ -149,6 +132,13 @@ public class MenuFragment extends SherlockFragment implements OnClickListener {
 			ft.addToBackStack("Game");
 			ft.commit();
 		}
+	}
+
+	@Override
+	public void gravatarBack() {
+		// Don't do this, instead follow tutorial here:
+		// http://evancharlton.com/thoughts/lazy-loading-images-in-a-listview
+		updateBoard();
 	}
 
 }

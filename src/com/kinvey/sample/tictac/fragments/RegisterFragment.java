@@ -1,6 +1,8 @@
 package com.kinvey.sample.tictac.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -14,8 +16,6 @@ import com.kinvey.android.callback.KinveyUserCallback;
 import com.kinvey.java.User;
 import com.kinvey.sample.tictac.R;
 import com.kinvey.sample.tictac.TicTac;
-import com.kinvey.sample.tictac.R.id;
-import com.kinvey.sample.tictac.R.layout;
 
 public class RegisterFragment extends SherlockFragment implements OnClickListener {
 	
@@ -81,13 +81,22 @@ public class RegisterFragment extends SherlockFragment implements OnClickListene
 						
 						@Override
 						public void onSuccess(User arg0) {
-							Toast.makeText(getSherlockActivity(), "Logged in as: " + TicTac.getClient(getSherlockActivity()).user().getUsername(), Toast.LENGTH_SHORT).show();
+							Log.i(TicTac.TAG, "Logged in as: " + TicTac.getClient(getSherlockActivity()).user().getUsername());
+							Log.i(TicTac.TAG, "Logged in as: " +arg0.getUsername());
+
+							Intent extras = new Intent();
+							extras.putExtra("username", arg0.getUsername());
+							
+							RegisterFragment.this.getSherlockActivity().setResult(2, extras);
 							RegisterFragment.this.getSherlockActivity().finish();
+							
+							
+					
 						}
 						
 						@Override
 						public void onFailure(Throwable arg0) {
-							Toast.makeText(getSherlockActivity(), "Error logging in: " + arg0.getMessage(), Toast.LENGTH_SHORT).show();
+							Log.i(TicTac.TAG,  "Error logging in: " + arg0.getMessage());
 							
 						}
 					});					
@@ -95,7 +104,7 @@ public class RegisterFragment extends SherlockFragment implements OnClickListene
 				
 				@Override
 				public void onFailure(Throwable arg0) {
-					Toast.makeText(getSherlockActivity(), "Error creating user: " + arg0.getMessage(), Toast.LENGTH_SHORT).show();
+					Log.i(TicTac.TAG,  "Error Creating: " + arg0.getMessage());
 					
 				}
 			});
