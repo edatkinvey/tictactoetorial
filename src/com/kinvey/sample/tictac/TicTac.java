@@ -7,43 +7,35 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.google.api.client.http.HttpTransport;
 import com.kinvey.android.Client;
 import com.kinvey.android.callback.KinveyListCallback;
 import com.kinvey.java.Query;
 import com.kinvey.sample.tictac.fragments.MenuFragment;
 
-public class TicTac extends SherlockFragmentActivity {
+public class TicTac extends ActionBarActivity {
 
 	public static final String TAG = "TicTac";
-
 	public static final String Collection = "GameResults";
-
 	public static final int REQUEST_LOGIN = 0;
-
 	private boolean showMenu = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
         Logger.getLogger(HttpTransport.class.getName()).setLevel(Level.FINEST);
-
-
 		// check if logged in-- if not, start user activity
 		// else start main menu fragment
 		if (TicTac.getClient(this).user().isUserLoggedIn()) {
-
 			showMenu();
-
 		} else {
 			startUserActivity();
-
 		}
 
 	}
@@ -51,16 +43,12 @@ public class TicTac extends SherlockFragmentActivity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-
 		if (showMenu) {
 			showMenu();
-
 		}
-
 	}
 
 	private void showMenu() {
-
 		loadGame();
 		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 		ft.replace(android.R.id.content, new MenuFragment());
@@ -111,7 +99,7 @@ public class TicTac extends SherlockFragmentActivity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		MenuInflater inflater = getSupportMenuInflater();
+		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.activity_tic_tac, menu);
 		return super.onCreateOptionsMenu(menu);
 	}

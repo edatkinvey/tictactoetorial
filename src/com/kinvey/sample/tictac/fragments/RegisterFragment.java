@@ -2,6 +2,7 @@ package com.kinvey.sample.tictac.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,15 +10,13 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
-import com.actionbarsherlock.app.SherlockFragment;
 import com.kinvey.android.callback.KinveyUserCallback;
 import com.kinvey.java.User;
 import com.kinvey.sample.tictac.R;
 import com.kinvey.sample.tictac.TicTac;
 
-public class RegisterFragment extends SherlockFragment implements OnClickListener {
+public class RegisterFragment extends Fragment implements OnClickListener {
 	
 	
 	private EditText username;
@@ -70,25 +69,25 @@ public class RegisterFragment extends SherlockFragment implements OnClickListene
 			final String user = username.getText().toString();
 			final String pass = password.getText().toString();
 			
-			TicTac.getClient(getSherlockActivity()).user().put("email", email.getText().toString());
+			TicTac.getClient(getActivity()).user().put("email", email.getText().toString());
 
 			
-			TicTac.getClient(getSherlockActivity()).user().create(user, pass, new KinveyUserCallback() {
+			TicTac.getClient(getActivity()).user().create(user, pass, new KinveyUserCallback() {
 				
 				@Override
 				public void onSuccess(User arg0) {
-					TicTac.getClient(getSherlockActivity()).user().login(user, pass, new KinveyUserCallback() {
+					TicTac.getClient(getActivity()).user().login(user, pass, new KinveyUserCallback() {
 						
 						@Override
 						public void onSuccess(User arg0) {
-							Log.i(TicTac.TAG, "Logged in as: " + TicTac.getClient(getSherlockActivity()).user().getUsername());
+							Log.i(TicTac.TAG, "Logged in as: " + TicTac.getClient(getActivity()).user().getUsername());
 							Log.i(TicTac.TAG, "Logged in as: " +arg0.getUsername());
 
 							Intent extras = new Intent();
 							extras.putExtra("username", arg0.getUsername());
 							
-							RegisterFragment.this.getSherlockActivity().setResult(2, extras);
-							RegisterFragment.this.getSherlockActivity().finish();
+							RegisterFragment.this.getActivity().setResult(2, extras);
+							RegisterFragment.this.getActivity().finish();
 							
 							
 					

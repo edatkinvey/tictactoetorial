@@ -6,53 +6,37 @@ import java.util.Random;
 
 import android.graphics.Point;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.MenuItemCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
-import com.actionbarsherlock.app.SherlockFragment;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
 import com.kinvey.sample.tictac.R;
 import com.kinvey.sample.tictac.TicTac;
 import com.kinvey.sample.tictac.component.CellView;
 import com.kinvey.sample.tictac.component.CellView.CellState;
 import com.kinvey.sample.tictac.fragments.EndGameDialog.EndGameDialogListener;
 
-public class GameFragment extends SherlockFragment implements OnTouchListener {
-
-	public enum WINNER {
-
-		PLAYER("You won!"), COMPUTER("You lost!"), STALEMATE("It's a tie!");
-
-		private String display;
-
-		WINNER(String display) {
-			this.display = display;
-
-		}
-
-		public String getDisplay() {
-			return this.display;
-		}
-
-	}
+public class GameFragment extends Fragment implements OnTouchListener {
 
 	private CellView[][] gameState;
-	
 
 	private static final int n = 3;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		getSherlockActivity().supportInvalidateOptionsMenu();
+		getActivity().supportInvalidateOptionsMenu();
 
 		setHasOptionsMenu(true);
 	}
@@ -81,7 +65,7 @@ public class GameFragment extends SherlockFragment implements OnTouchListener {
 			for (int j = 0; j < n; j++) {
 
 				int id = getResources().getIdentifier("tictac_box" + i + j,
-						"id", getSherlockActivity().getPackageName());
+						"id", getActivity().getPackageName());
 				Log.i(TicTac.TAG, "loading view: " + "tictac_box" + i + j
 						+ " and " + (v == null));
 
@@ -157,14 +141,14 @@ public class GameFragment extends SherlockFragment implements OnTouchListener {
 	}
 
 	public void gameOver(WINNER winner) {
-		FragmentManager fm = getSherlockActivity().getSupportFragmentManager();
-		final EndGameDialog endGameFragment = new EndGameDialog(winner, getSherlockActivity());
+		FragmentManager fm = getActivity().getSupportFragmentManager();
+		final EndGameDialog endGameFragment = new EndGameDialog(winner, getActivity());
 		endGameFragment.setListener(new EndGameDialogListener() {
 
 			@Override
 			public void onQuit() {
 				endGameFragment.dismiss();
-				FragmentTransaction ft = getSherlockActivity()
+				FragmentTransaction ft = getActivity()
 						.getSupportFragmentManager().beginTransaction();
 				ft.replace(android.R.id.content, new MenuFragment());
 				ft.commit();
@@ -227,8 +211,7 @@ public class GameFragment extends SherlockFragment implements OnTouchListener {
 	}
 
 	@Override
-	public boolean onOptionsItemSelected(
-			com.actionbarsherlock.view.MenuItem item) {
+	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.menu_item_newgame:
 			newGame();
@@ -248,5 +231,18 @@ public class GameFragment extends SherlockFragment implements OnTouchListener {
 		}
 		return openPoints;
 	}
+
+    public enum WINNER {
+        PLAYER("You won!"), COMPUTER("You lost!"), STALEMATE("It's a tie!");
+        private String display;
+
+        WINNER(String display) {
+            this.display = display;
+        }
+
+        public String getDisplay() {
+            return this.display;
+        }
+    }
 
 }

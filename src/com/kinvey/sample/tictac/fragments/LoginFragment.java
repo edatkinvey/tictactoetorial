@@ -2,6 +2,7 @@ package com.kinvey.sample.tictac.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,15 +12,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.SherlockFragment;
 import com.kinvey.android.callback.KinveyUserCallback;
 import com.kinvey.java.User;
 import com.kinvey.sample.tictac.R;
 import com.kinvey.sample.tictac.TicTac;
-import com.kinvey.sample.tictac.R.id;
-import com.kinvey.sample.tictac.R.layout;
 
-public class LoginFragment extends SherlockFragment implements OnClickListener {
+public class LoginFragment extends Fragment implements OnClickListener {
 
 	private EditText username;
 	private EditText password;
@@ -72,25 +70,25 @@ public class LoginFragment extends SherlockFragment implements OnClickListener {
 		String user = username.getText().toString();
 		String pass = password.getText().toString();
 
-		TicTac.getClient(getSherlockActivity()).user()
+		TicTac.getClient(getActivity()).user()
 				.login(user, pass, new KinveyUserCallback() {
 
 					@Override
 					public void onSuccess(User arg0) {
-						Log.i(TicTac.TAG, "Logged in as: " + TicTac.getClient(getSherlockActivity()).user().getUsername());
+						Log.i(TicTac.TAG, "Logged in as: " + TicTac.getClient(getActivity()).user().getUsername());
 						Log.i(TicTac.TAG, "Logged in as: " +arg0.getUsername());
 
 						Intent extras = new Intent();
 						extras.putExtra("username", arg0.getUsername());
 						
-						LoginFragment.this.getSherlockActivity().setResult(2, extras);
-						LoginFragment.this.getSherlockActivity().finish();
+						LoginFragment.this.getActivity().setResult(2, extras);
+						LoginFragment.this.getActivity().finish();
 
 					}
 
 					@Override
 					public void onFailure(Throwable arg0) {
-						Toast.makeText(getSherlockActivity(),
+						Toast.makeText(getActivity(),
 								"Error logging in: " + arg0.getMessage(),
 								Toast.LENGTH_SHORT).show();
 

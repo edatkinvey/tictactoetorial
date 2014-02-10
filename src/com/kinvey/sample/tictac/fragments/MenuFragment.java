@@ -1,11 +1,11 @@
 package com.kinvey.sample.tictac.fragments;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,7 +17,6 @@ import android.widget.ListView;
 import android.widget.TableLayout;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.SherlockFragment;
 import com.kinvey.android.callback.KinveyListCallback;
 import com.kinvey.java.Query;
 import com.kinvey.java.query.AbstractQuery.SortOrder;
@@ -27,7 +26,7 @@ import com.kinvey.sample.tictac.R;
 import com.kinvey.sample.tictac.TicTac;
 import com.kinvey.sample.tictac.component.LeaderAdapter;
 
-public class MenuFragment extends SherlockFragment implements OnClickListener,
+public class MenuFragment extends Fragment implements OnClickListener,
 		GravatarCallback {
 
 	private TableLayout leaderBoard;
@@ -62,7 +61,7 @@ public class MenuFragment extends SherlockFragment implements OnClickListener,
 		leaders.clear();
 
 
-		TicTac.getClient(getSherlockActivity())
+		TicTac.getClient(getActivity())
 				.appData(TicTac.Collection, GameEntity.class)
 				.get(top, new KinveyListCallback<GameEntity>() {
 
@@ -82,7 +81,7 @@ public class MenuFragment extends SherlockFragment implements OnClickListener,
 
 					@Override
 					public void onFailure(Throwable arg0) {
-						Toast.makeText(getSherlockActivity(),
+						Toast.makeText(getActivity(),
 								"something went wrong -> " + arg0.getMessage(),
 								Toast.LENGTH_SHORT).show();
 
@@ -93,12 +92,12 @@ public class MenuFragment extends SherlockFragment implements OnClickListener,
 
 	private void updateBoard() {
 
-		if (getSherlockActivity() == null) {
+		if (getActivity() == null) {
 			return;
 		}
 
-		leaderList.setAdapter(new LeaderAdapter(getSherlockActivity(), leaders,
-				(LayoutInflater) getSherlockActivity().getSystemService(
+		leaderList.setAdapter(new LeaderAdapter(getActivity(), leaders,
+				(LayoutInflater) getActivity().getSystemService(
 						Activity.LAYOUT_INFLATER_SERVICE)));
 
 	}
@@ -126,7 +125,7 @@ public class MenuFragment extends SherlockFragment implements OnClickListener,
 	@Override
 	public void onClick(View v) {
 		if (v == newGame) {
-			FragmentTransaction ft = getSherlockActivity()
+			FragmentTransaction ft = getActivity()
 					.getSupportFragmentManager().beginTransaction();
 			ft.replace(android.R.id.content, new GameFragment());
 			ft.addToBackStack("Game");

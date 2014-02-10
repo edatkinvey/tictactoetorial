@@ -1,19 +1,20 @@
 package com.kinvey.sample.tictac;
 
+import android.app.ActionBar;
+import android.app.ActionBar.Tab;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBar.TabListener;
+import android.support.v7.app.ActionBarActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.ActionBar.Tab;
-import com.actionbarsherlock.app.SherlockFragment;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.kinvey.sample.tictac.fragments.LoginFragment;
 import com.kinvey.sample.tictac.fragments.RegisterFragment;
 
-public class UserActivity extends SherlockFragmentActivity implements ActionBar.TabListener{
+public class UserActivity extends ActionBarActivity implements TabListener{
 	
 	
 	@Override
@@ -43,17 +44,17 @@ public class UserActivity extends SherlockFragmentActivity implements ActionBar.
 	public void setUpTabs() {
 
 		getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-		ActionBar.Tab loginTab = getSupportActionBar().newTab().setText("Login").setTabListener(this);
+		android.support.v7.app.ActionBar.Tab loginTab = getSupportActionBar().newTab().setText("Login").setTabListener(this);
 		getSupportActionBar().addTab(loginTab);
 
-		ActionBar.Tab registerTab = getSupportActionBar().newTab().setText("Register").setTabListener(this);
+		android.support.v7.app.ActionBar.Tab registerTab = getSupportActionBar().newTab().setText("Register").setTabListener(this);
 		getSupportActionBar().addTab(registerTab);
 
 	}
 	
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getSupportMenuInflater();
+        MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.activity_user, menu);
         return super.onCreateOptionsMenu(menu);
     }
@@ -78,22 +79,31 @@ public class UserActivity extends SherlockFragmentActivity implements ActionBar.
 
 	// -------------Actionbar.TabListener methods
 	@Override
-	public void onTabSelected(Tab tab, FragmentTransaction ft) {
-		SherlockFragment toShow = null;
+	public void onTabReselected(android.support.v7.app.ActionBar.Tab arg0,
+			FragmentTransaction arg1) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onTabSelected(android.support.v7.app.ActionBar.Tab tab, FragmentTransaction tr) {
+		Fragment toShow = null;
 		if (tab.getPosition() == 0){
 			toShow = new LoginFragment();
 		}else{
 			toShow = new RegisterFragment();
 		}
-		ft.replace(android.R.id.content, toShow); // <----- Content view is set here
+		tr.replace(android.R.id.content, toShow); // <----- Content view is set here					
+	}
 
+	@Override
+	public void onTabUnselected(android.support.v7.app.ActionBar.Tab arg0,
+			FragmentTransaction arg1) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	
-	@Override
-	public void onTabUnselected(Tab tab, FragmentTransaction ft) {}
 
-	@Override
-	public void onTabReselected(Tab tab, FragmentTransaction ft) {}
 
 }

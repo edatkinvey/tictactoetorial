@@ -18,11 +18,7 @@ import com.kinvey.java.model.KinveyMetaData;
 
 public class GameEntity extends GenericJson{
 	
-	public interface GravatarCallback{
-		void gravatarBack();
-		
-	
-	}
+
 	
 	@Key
 	private int totalWins;
@@ -170,6 +166,10 @@ public class GameEntity extends GenericJson{
 		
 
 	}
+
+    public interface GravatarCallback{
+        void gravatarBack();
+    }
 	
 
 }
